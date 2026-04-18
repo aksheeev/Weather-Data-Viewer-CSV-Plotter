@@ -533,7 +533,11 @@ python plotter.py
 
 ## AI Workflow & Prompts
 
-All AI interactions were conducted in a single Claude (claude.ai) conversation. The full chat history is included as `ai-prompts/prompts.pdf`.
+The full AI interaction history (approximately 70 pages) is included in:
+
+📄 `ai-prompts/prompts.pdf`
+
+Since the full document is extensive, below is a concise summary of the key prompts used during development:
 
 ### Summary of Key Prompts Used
 
@@ -548,6 +552,14 @@ All AI interactions were conducted in a single Claude (claude.ai) conversation. 
 
 **Feature Additions:**
 > "okay few things I'd like to add: 1) A wind speed chart 2) Combine humidity in the temperature chart, both of different color 3) A city map using leaflet.js and a marker highlighting it with colors according to the temperature (red, orange, yellow, light blue, dark blue; from hot to cold), it will serve as a summary with all important fields like wind speed, humidity, temp around it."
+
+**Debugging and Error Correction**
+>" i have added these things but now the site does not show anything(just the interface)"
+
+>"still the loading issue"
+
+>"i found a similar prob on github, this fixed it for him"
+   
 
 **Code Generation (Part 2):**
 > "lets go with part 2" → Claude asked 3 clarifying questions (dropdowns for columns, extra graph types, GUI style) and then generated all 3 files.
