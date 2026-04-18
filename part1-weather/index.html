@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+
+    <div class="app-wrapper">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="header-inner">
+          <div class="logo">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <span>WeatherView</span>
+          </div>
+          <div class="search-wrapper">
+            <input type="text" id="city-input" placeholder="Search city..." autocomplete="off" />
+            <button id="search-btn">Search</button>
+            <ul id="suggestions" class="suggestions hidden"></ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main -->
+      <main class="main">
+
+        <div id="error-banner" class="error-banner hidden">
+          <span id="error-message">City not found. Please try again.</span>
+        </div>
+
+        <div id="loading" class="loading hidden">
+          <div class="spinner"></div>
+          <p>Fetching weather data...</p>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard hidden">
+
+          <div class="city-header">
+            <h1 id="city-name">--</h1>
+            <p id="city-meta">--</p>
+          </div>
+
+          <!-- Stat Cards -->
+          <section class="stat-grid">
+
+            <div class="stat-card">
+              <div class="stat-icon temp-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Temperature</span>
+                <span class="stat-value" id="temperature">--</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon humid-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Humidity</span>
+                <span class="stat-value" id="humidity">--</span>
+                <span class="stat-sub">Relative humidity</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon wind-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Wind Speed</span>
+                <span class="stat-value" id="wind-speed">--</span>
+                <span class="stat-sub" id="wind-dir">Direction: --</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon vis-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-label">Weather Description</span>
+                <span class="stat-value" id="uv-index">--</span>
+                <span class="stat-sub" id="weather-desc">--</span>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- Charts -->
+          <section class="charts-grid">
+            <div class="chart-card">
+              <h2 class="chart-title">Temperature Throughout the Day (°C)</h2>
+              <div class="chart-container">
+                <canvas id="temp-chart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h2 class="chart-title">Precipitation Probability (%)</h2>
+              <div class="chart-container">
+                <canvas id="rain-chart"></canvas>
+              </div>
+            </div>
+          </section>
+
+          <!-- Hourly Strip -->
+          <section class="forecast-section">
+            <h2 class="section-title">Hourly Forecast</h2>
+            <div id="hourly-strip" class="hourly-strip"></div>
+          </section>
+
+          <!-- 7-Day Forecast -->
+          <section class="forecast-section">
+            <h2 class="section-title">7-Day Forecast</h2>
+            <div id="daily-grid" class="daily-grid"></div>
+          </section>
+
+        </div>
+        <!-- end #dashboard -->
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.25">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <p>Search for a city to see the weather</p>
+        </div>
+
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
