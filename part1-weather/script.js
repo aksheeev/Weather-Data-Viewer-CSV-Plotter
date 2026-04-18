@@ -15,9 +15,22 @@ const WMO_CODES = {
 
 const WIND_DIRECTIONS = ["N","NE","E","SE","S","SW","W","NW"];
 
+// ─── Temperature → Marker Color ────────────────────────────────
+function tempToColor(temp) {
+  if (temp >= 35) return { color: "#ef4444", label: "Very Hot" };
+  if (temp >= 28) return { color: "#f97316", label: "Hot" };
+  if (temp >= 20) return { color: "#eab308", label: "Warm" };
+  if (temp >= 10) return { color: "#93c5fd", label: "Cool" };
+  return                 { color: "#3b82f6", label: "Cold" };
+}
+
 // ─── State ─────────────────────────────────────────────────────
 let tempChart = null;
 let rainChart = null;
+let windChart = null;
+let map       = null;
+let mapMarker = null;
+
 
 // ─── DOM Refs ──────────────────────────────────────────────────
 const cityInput     = document.getElementById("city-input");
@@ -209,53 +222,102 @@ function renderDashboard(data, cityName, admin1, country) {
   const next24Hours   = hourly.time.slice(currentIdx, currentIdx + 24);
   const next24Temps   = hourly.temperature_2m.slice(currentIdx, currentIdx + 24);
   const next24Rain    = hourly.precipitation_probability.slice(currentIdx, currentIdx + 24);
+  const next24Humidity = hourly.relative_humidity_2m.slice(currentIdx, currentIdx + 24);
+  const next24Wind     = hourly.wind_speed_10m.slice(currentIdx, currentIdx + 24);
   const labels        = next24Hours.map(formatHour);
 
-  renderTempChart(labels, next24Temps);
+  renderTempChart(labels, next24Temps, next24Humidity);
   renderRainChart(labels, next24Rain);
+  renderWindChart(labels, next24Wind);
 
   // ── Hourly Strip
   renderHourlyStrip(hourly, currentIdx);
 
   // ── Daily Forecast
   renderDailyForecast(daily);
-
+  //--map call
+  const weatherDesc = WMO_CODES[wCode] ?? "Clear";
+  renderMap(
+    data.latitude,
+    data.longitude,
+    cityName,
+    cw.temperature,
+    hourly.relative_humidity_2m[currentIdx],
+    cw.windspeed,
+    windDegToDir(cw.winddirection),
+    weatherDesc
+  );
   showDashboard();
+  
+  // Fix Leaflet rendering issue
+  setTimeout(() => {
+    if (map) {
+      map.invalidateSize();
+    }
+  }, 100);
 }
 
 // ─── Temperature Chart ──────────────────────────────────────────
-function renderTempChart(labels, temps) {
+function renderTempChart(labels, temps, humidity) {
   if (tempChart) tempChart.destroy();
 
   const ctx = document.getElementById("temp-chart").getContext("2d");
 
-  const gradient = ctx.createLinearGradient(0, 0, 0, 220);
-  gradient.addColorStop(0,   "rgba(249, 115, 22, 0.35)");
-  gradient.addColorStop(1,   "rgba(249, 115, 22, 0.0)");
+  const gradientTemp = ctx.createLinearGradient(0, 0, 0, 220);
+  gradientTemp.addColorStop(0, "rgba(249, 115, 22, 0.35)");
+  gradientTemp.addColorStop(1, "rgba(249, 115, 22, 0.0)");
+
+  const gradientHumid = ctx.createLinearGradient(0, 0, 0, 220);
+  gradientHumid.addColorStop(0, "rgba(34, 211, 238, 0.2)");
+  gradientHumid.addColorStop(1, "rgba(34, 211, 238, 0.0)");
 
   tempChart = new Chart(ctx, {
     type: "line",
     data: {
       labels,
-      datasets: [{
-        label: "Temperature (°C)",
-        data: temps,
-        borderColor: "#f97316",
-        backgroundColor: gradient,
-        borderWidth: 2.5,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "#f97316",
-        tension: 0.4,
-        fill: true
-      }]
+      datasets: [
+        {
+          label: "Temperature (°C)",
+          data: temps,
+          borderColor: "#f97316",
+          backgroundColor: gradientTemp,
+          borderWidth: 2.5,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: "#f97316",
+          tension: 0.4,
+          fill: true,
+          yAxisID: "y"
+        },
+        {
+          label: "Humidity (%)",
+          data: humidity,
+          borderColor: "#22d3ee",
+          backgroundColor: gradientHumid,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: "#22d3ee",
+          tension: 0.4,
+          fill: true,
+          yAxisID: "y1"
+        }
+      ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: true,
+          labels: {
+            color: "#94a3b8",
+            font: { size: 11 },
+            boxWidth: 12,
+            padding: 16
+          }
+        },
         tooltip: {
           backgroundColor: "#1e2130",
           borderColor: "rgba(255,255,255,0.08)",
@@ -264,7 +326,9 @@ function renderTempChart(labels, temps) {
           bodyColor: "#f1f5f9",
           padding: 10,
           callbacks: {
-            label: ctx => ` ${Math.round(ctx.parsed.y)}°C`
+            label: ctx => ctx.dataset.yAxisID === "y"
+              ? ` Temp: ${Math.round(ctx.parsed.y)}°C`
+              : ` Humidity: ${ctx.parsed.y}%`
           }
         }
       },
@@ -274,11 +338,23 @@ function renderTempChart(labels, temps) {
           ticks: { color: "#475569", font: { size: 11 }, maxTicksLimit: 8 }
         },
         y: {
+          position: "left",
           grid:  { color: "rgba(255,255,255,0.04)" },
           ticks: {
-            color: "#475569",
+            color: "#f97316",
             font: { size: 11 },
             callback: v => `${v}°`
+          }
+        },
+        y1: {
+          position: "right",
+          min: 0,
+          max: 100,
+          grid: { drawOnChartArea: false },
+          ticks: {
+            color: "#22d3ee",
+            font: { size: 11 },
+            callback: v => `${v}%`
           }
         }
       }
@@ -342,6 +418,126 @@ function renderRainChart(labels, rainData) {
       }
     }
   });
+}
+
+//---Wind Chart------
+function renderWindChart(labels, windData) {
+  if (windChart) windChart.destroy();
+
+  const ctx = document.getElementById("wind-chart").getContext("2d");
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+  gradient.addColorStop(0, "rgba(167, 139, 250, 0.35)");
+  gradient.addColorStop(1, "rgba(167, 139, 250, 0.0)");
+
+  windChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Wind Speed (km/h)",
+        data: windData,
+        borderColor: "#a78bfa",
+        backgroundColor: gradient,
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "#a78bfa",
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#1e2130",
+          borderColor: "rgba(255,255,255,0.08)",
+          borderWidth: 1,
+          titleColor: "#94a3b8",
+          bodyColor: "#f1f5f9",
+          padding: 10,
+          callbacks: {
+            label: ctx => ` ${Math.round(ctx.parsed.y)} km/h`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid:  { color: "rgba(255,255,255,0.04)" },
+          ticks: { color: "#475569", font: { size: 11 }, maxTicksLimit: 8 }
+        },
+        y: {
+          min: 0,
+          grid:  { color: "rgba(255,255,255,0.04)" },
+          ticks: {
+            color: "#475569",
+            font: { size: 11 },
+            callback: v => `${v}`
+          }
+        }
+      }
+    }
+  });
+}
+
+//MAP function
+function renderMap(lat, lon, cityName, temp, humidity, windSpeed, windDir, weatherDesc) {
+  const { color } = tempToColor(temp);
+
+  // Init map only once, then reuse
+  if (!map) {
+    map = L.map("city-map", { zoomControl: true, scrollWheelZoom: true });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 18
+    }).addTo(map);
+  }
+
+  map.setView([lat, lon], 11);
+
+  // Remove old marker
+  if (mapMarker) map.removeLayer(mapMarker);
+
+  // Custom colored marker
+  const markerHtml = `
+    <div style="
+      width: 52px; height: 52px;
+      background: ${color};
+      border: 3px solid rgba(255,255,255,0.85);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+      box-shadow: 0 0 0 4px ${color}55, 0 4px 16px rgba(0,0,0,0.4);
+    ">${Math.round(temp)}°</div>
+  `;
+
+  const icon = L.divIcon({
+    html: markerHtml,
+    className: "",
+    iconSize: [52, 52],
+    iconAnchor: [26, 26],
+    popupAnchor: [0, -30]
+  });
+
+  const popupHtml = `
+    <div class="map-popup">
+      <h3>${cityName}</h3>
+      <div class="map-popup-row"><span>Temperature</span><span>${Math.round(temp)}°C</span></div>
+      <div class="map-popup-row"><span>Feels like</span><span>N/A</span></div>
+      <div class="map-popup-row"><span>Humidity</span><span>${humidity}%</span></div>
+      <div class="map-popup-row"><span>Wind</span><span>${Math.round(windSpeed)} km/h ${windDir}</span></div>
+      <div class="map-popup-row"><span>Condition</span><span>${weatherDesc}</span></div>
+    </div>
+  `;
+
+  mapMarker = L.marker([lat, lon], { icon })
+    .addTo(map)
+    .bindPopup(popupHtml, { maxWidth: 240 })
+    .openPopup();
 }
 
 // ─── Hourly Strip ───────────────────────────────────────────────

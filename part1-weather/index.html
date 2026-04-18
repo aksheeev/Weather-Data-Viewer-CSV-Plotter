@@ -6,6 +6,7 @@
     <title>Weather Dashboard</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   </head>
   <body>
 
@@ -115,20 +116,32 @@
 
           <!-- Charts -->
           <section class="charts-grid">
-            <div class="chart-card">
-              <h2 class="chart-title">Temperature Throughout the Day (°C)</h2>
+          <div class="chart-card">
+              <h2 class="chart-title">Temperature (°C) & Humidity (%)</h2>
               <div class="chart-container">
-                <canvas id="temp-chart"></canvas>
+              <canvas id="temp-chart"></canvas>
               </div>
-            </div>
-            <div class="chart-card">
+          </div>
+          <div class="chart-card">
               <h2 class="chart-title">Precipitation Probability (%)</h2>
               <div class="chart-container">
-                <canvas id="rain-chart"></canvas>
+              <canvas id="rain-chart"></canvas>
               </div>
-            </div>
+          </div>
+          <div class="chart-card">
+              <h2 class="chart-title">Wind Speed (km/h)</h2>
+              <div class="chart-container">
+              <canvas id="wind-chart"></canvas>
+              </div>
+          </div>
           </section>
-
+  
+          <!-- Map -->
+          <section class="forecast-section">
+          <h2 class="section-title">City Map</h2>
+          <div id="city-map" class="map-container"></div>
+          </section>
+          
           <!-- Hourly Strip -->
           <section class="forecast-section">
             <h2 class="section-title">Hourly Forecast</h2>
@@ -162,6 +175,7 @@
 
       </main>
     </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script src="script.js"></script>
   </body>
