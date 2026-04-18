@@ -213,7 +213,7 @@ function renderDashboard(data, cityName, admin1, country) {
 
   // UV index isn't in free tier — show weather description instead
   const wCode = cw.weathercode;
-  document.getElementById("uv-index").textContent =
+  document.getElementById("weather-condition").textContent =
     WMO_CODES[wCode] ?? "Clear";
   document.getElementById("weather-desc").textContent =
     `Weather code ${wCode}`;
