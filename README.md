@@ -10,25 +10,26 @@
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
-2. [Part 1 – Weather Data Viewer](#part-1--weather-data-viewer)
+2. [Demo Video](#demo-video)
+3. [Screenshots](#screenshots)
+4. [Part 1 – Weather Data Viewer](#part-1--weather-data-viewer)
    - [What It Does](#what-it-does)
    - [Tech Stack](#tech-stack)
    - [File Structure](#file-structure)
    - [How to Run](#how-to-run)
    - [Architecture Overview](#architecture-overview)
    - [Sequential Pipeline](#sequential-pipeline)
-3. [Part 2 – Python CSV Plotter](#part-2--python-csv-plotter)
+5. [Part 2 – Python CSV Plotter](#part-2--python-csv-plotter)
    - [What It Does](#what-it-does-1)
    - [Tech Stack](#tech-stack-1)
    - [File Structure](#file-structure-1)
    - [How to Run](#how-to-run-1)
    - [Architecture Overview](#architecture-overview-1)
    - [Sequential Pipeline](#sequential-pipeline-1)
-4. [AI Workflow & Prompts](#ai-workflow--prompts)
-5. [Manual Changes](#manual-changes)
-6. [Issues Encountered & Solutions](#issues-encountered--solutions)
-7. [Dependencies Summary](#dependencies-summary)
-
+6. [AI Workflow & Prompts](#ai-workflow--prompts)
+7. [Manual Changes](#manual-changes)
+8. [Issues Encountered & Solutions](#issues-encountered--solutions)
+9. [Dependencies Summary](#dependencies-summary)
 ---
 
 ## Project Overview
@@ -41,6 +42,27 @@ This submission contains two working utilities built using Claude (claude.ai) as
 Both utilities are designed to run cross-platform (Windows x86 and Debian ARM) with minimal setup.
 
 ---
+## Demo Video
+
+▶️ [Watch Demo (Recommended)](https://www.youtube.com/watch?v=VmNNzu-sxgc)
+
+📥 [Download Demo](./demo.mp4)
+
+## Screenshots
+
+### Weather Dashboard
+
+#### Overview
+![Dashboard Top](images/dashboard-top.png)
+
+#### Map & Forecast
+![Dashboard Bottom](images/dashboard-bottom.png)
+
+---
+
+### CSV Plotter
+
+![CSV Plotter](images/csv-plotter.png)
 
 ## Part 1 – Weather Data Viewer
 
