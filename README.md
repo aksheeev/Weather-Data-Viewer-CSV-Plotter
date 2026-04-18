@@ -1,9 +1,9 @@
 # Aeron Systems – AI Prototyping Intern Assignment
 
-**Built by:** [Your Name]  
+**Built by:** Aksheev Tanwar  
 **Submitted:** April 2026  
-**AI Tool Used:** Claude (claude.ai) — Sonnet model  
-**Repository:** [Your GitHub repo link]
+**AI Tool Used:** Claude (claude.ai) — Sonnet model, ChatGPT, Figma.ai (dashboard visualization)  
+**Repository:** https://github.com/aksheeev/Aeron-Intern-Assignment
 
 ---
 
