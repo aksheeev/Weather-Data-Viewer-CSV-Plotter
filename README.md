@@ -1,8 +1,8 @@
 # Aeron Systems – AI Prototyping Intern Assignment
 
-**Built by:** Aksheev Tanwar  
+**Built by:** Aksheev Tanwar  (MIT WPU Btech CSE)
 **Submitted:** April 2026  
-**AI Tool Used:** Claude (claude.ai) — Sonnet model, ChatGPT, Figma.ai (dashboard visualization)  
+**AI Tool Used:** Claude (claude.ai) — Sonnet model and ChatGPT 
 **Repository:** https://github.com/aksheeev/Aeron-Intern-Assignment
 
 ---
@@ -128,11 +128,11 @@ npx serve part1-weather
 │                        BROWSER LAYER                                │
 │                                                                     │
 │  index.html                                                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
-│  │  CDN Scripts │  │   style.css  │  │   DOM Elements           │  │
-│  │  Chart.js    │  │  Dark theme  │  │  Header + Search Bar     │  │
-│  │  Leaflet.js  │  │  CSS vars    │  │  Stat Cards (4)          │  │
-│  └──────────────┘  └──────────────┘  │  Chart Canvases (3)      │  │
+│  ┌──────────────┐  ┌──────────────┐   ┌──────────────────────────┐  │
+│  │  CDN Scripts │  │   style.css  │   │   DOM Elements           │  │
+│  │  Chart.js    │  │  Dark theme  │   │  Header + Search Bar     │  │
+│  │  Leaflet.js  │  │  CSS vars    │   │  Stat Cards (4)          │  │
+│  └──────────────┘  └──────────────┘   │  Chart Canvases (3)      │  │
 │                                       │  Hourly Strip            │  │
 │                                       │  7-Day Grid              │  │
 │                                       │  Leaflet Map Div         │  │
@@ -145,7 +145,7 @@ npx serve part1-weather
 │                                                                     │
 │  Config / Constants                                                 │
 │  ┌──────────────────────────────────────────────────────────────┐   │
-│  │  GEOCODING_API   WEATHER_API   WMO_CODES   WIND_DIRECTIONS  │   │
+│  │  GEOCODING_API   WEATHER_API   WMO_CODES   WIND_DIRECTIONS   │   │
 │  │  tempToColor()                                               │   │
 │  └──────────────────────────────────────────────────────────────┘   │
 │                                                                     │
@@ -166,7 +166,7 @@ npx serve part1-weather
 │  Orchestrator                                                       │
 │  ┌──────────────────────────────────────────────────────────────┐   │
 │  │                   renderDashboard()                          │   │
-│  │  Finds currentIdx → slices hourly array → fans out to:      │   │
+│  │  Finds currentIdx → slices hourly array → fans out to:       │   │
 │  └──────────────────────────────────────────────────────────────┘   │
 │       │           │           │           │           │             │
 │       ▼           ▼           ▼           ▼           ▼             │
@@ -178,15 +178,15 @@ npx serve part1-weather
 │                             ▼                                       │
 │                        renderMap()                                  │
 │  ┌──────────────────────────────────────────────────────────────┐   │
-│  │  tempToColor(temp) → marker colour                          │   │
-│  │  L.divIcon() custom HTML marker                             │   │
-│  │  bindPopup() with stats table                               │   │
+│  │  tempToColor(temp) → marker colour                           │   │
+│  │  L.divIcon() custom HTML marker                              │   │
+│  │  bindPopup() with stats table                                │   │
 │  └──────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 │  Utility Helpers (stateless)                                        │
 │  ┌───────────────────────────────────────────────────────────────┐  │
-│  │  windDegToDir()   formatHour()   formatDay()                 │  │
-│  │  showError()      setLoading()   showDashboard()             │  │
+│  │  windDegToDir()   formatHour()   formatDay()                  │  │
+│  │  showError()      setLoading()   showDashboard()              │  │
 │  └───────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────┘
                               │
@@ -275,14 +275,14 @@ npx serve part1-weather
    ▼                                      ▼
 ┌──────────────────────────┐  ┌──────────────────────────────────────┐
 │  STEP 7a – Charts (x3)   │  │  STEP 7b – Forecast Sections         │
-│  renderTempChart()        │  │  renderHourlyStrip() → 24 cards      │
-│  → dual-axis (temp+humid) │  │  renderDailyForecast() → 7 cards     │
-│  renderRainChart()        │  └──────────────────────────────────────┘
-│  → bar chart              │
-│  renderWindChart()        │
-│  → line chart             │
-│  (old chart destroyed     │
-│   before re-draw)         │
+│  renderTempChart()       │  │  renderHourlyStrip() → 24 cards      │
+│  → dual-axis (temp+humid)│  │  renderDailyForecast() → 7 cards     │
+│  renderRainChart()       │  └──────────────────────────────────────┘
+│  → bar chart             │
+│  renderWindChart()       │
+│  → line chart            │
+│  (old chart destroyed    │
+│   before re-draw)        │
 └──────────────────────────┘
    │
    ▼
@@ -365,10 +365,10 @@ python plotter.py
 ### Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      TKINTER UI LAYER                               │
-│                                                                     │
-│  CSVPlotter Window (1000×700)                                       │
+┌────────────────────────────────────────────────────────────────────┐
+│                      TKINTER UI LAYER                              │
+│                                                                    │
+│  CSVPlotter Window (1000×700)                                      │
 │  ┌───────────────────────┐   ┌─────────────────────────────────┐   │
 │  │   LEFT PANEL (260px)  │   │   RIGHT PANEL (expands)         │   │
 │  │                       │   │                                 │   │
@@ -388,7 +388,7 @@ python plotter.py
 │  │  [Clear]    button    │                                         │
 │  │  12 rows · 6 columns  │                                         │
 │  └───────────────────────┘                                         │
-└─────────────────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    CLASS METHODS LAYER                              │
@@ -397,39 +397,39 @@ python plotter.py
 │                                                                     │
 │  __init__()          ← Sets up window, state variables              │
 │  _build_ui()         ← Constructs all widgets                       │
-│  _apply_styles()     ← Configures ttk.Style (dark Combobox theme)  │
+│  _apply_styles()     ← Configures ttk.Style (dark Combobox theme)   │
 │                                                                     │
 │  _load_csv()         ← Opens file dialog, reads with pandas,        │
 │                         populates dropdowns with column names       │
 │                                                                     │
-│  _plot()             ← Validates inputs (3 guards), calls          │
+│  _plot()             ← Validates inputs (3 guards), calls           │
 │                         _draw_plot() on success                     │
 │                                                                     │
 │  _draw_plot()        ← Destroys old canvas, applies dark rcParams,  │
 │                         draws correct chart type, embeds in window  │
 │                                                                     │
-│  _clear_plot()       ← Destroys canvas, closes figure, shows       │
+│  _clear_plot()       ← Destroys canvas, closes figure, shows        │
 │                         placeholder again                           │
 │                                                                     │
 │  UI helpers:                                                        │
 │  _divider()  _section_label()  _field_label()                       │
 │                                                                     │
-│  Instance State:                                                     │
+│  Instance State:                                                    │
 │  self.df             ← pandas DataFrame (stays loaded between plots)│
 │  self.fig            ← current matplotlib Figure                    │
-│  self.canvas_widget  ← current FigureCanvasTkAgg                   │
+│  self.canvas_widget  ← current FigureCanvasTkAgg                    │
 └─────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────┐
-│                      LIBRARIES LAYER                                │
-│                                                                     │
+┌────────────────────────────────────────────────────────────────────┐
+│                      LIBRARIES LAYER                               │
+│                                                                    │
 │  ┌──────────┐  ┌──────────┐  ┌────────────┐  ┌──────────────────┐  │
 │  │ tkinter  │  │  pandas  │  │ matplotlib │  │ FigureCanvasTkAgg│  │
 │  │ built-in │  │ read_csv │  │  pyplot    │  │ (backend bridge) │  │
-│  │ GUI kit  │  │ to_numeric│  │ rcParams  │  │ embeds plt inside│  │
+│  │ GUI kit  │  │to_numeric│  │ rcParams   │  │ embeds plt inside│  │
 │  └──────────┘  └──────────┘  └────────────┘  │ Tkinter window   │  │
-│                                               └──────────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
+│                                              └──────────────────┘  │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -462,7 +462,7 @@ python plotter.py
 │  STEP 3 – CSV Load                       │
 │  pd.read_csv(path) → self.df             │
 │  Column names → X and Y dropdowns        │
-│  Smart default: col[0] → X, col[1] → Y  │
+│  Smart default: col[0] → X, col[1] → Y   │
 │  Row/column count shown at bottom        │
 └──────────────────────────────────────────┘
    │
@@ -502,8 +502,8 @@ python plotter.py
 │                                          │
 │  "Line Chart"    → ax.plot() + fill      │
 │  "Bar Chart"     → ax.bar() with         │
-│                    range(len(x)) positions│
-│                    + manual x tick labels │
+│                   range(len(x)) positions│
+│                   + manual x tick labels │
 │  "Scatter Plot"  → ax.scatter()          │
 │                                          │
 │  All types share same axis formatting:   │
