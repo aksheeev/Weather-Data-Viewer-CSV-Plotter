@@ -1,9 +1,8 @@
-# Aeron Systems – AI Prototyping Intern Assignment
+#  Weather csv plotter
+
 
 **Built by:** Aksheev Tanwar  (MIT WPU Btech CSE)
-**Submitted:** April 2026  
-**AI Tool Used:** Claude (claude.ai) — Sonnet model and ChatGPT 
-**Repository:** https://github.com/aksheeev/Aeron-Intern-Assignment
+
 
 ---
 
@@ -34,7 +33,7 @@
 
 ## Project Overview
 
-This submission contains two working utilities built using Claude (claude.ai) as the primary AI assistant:
+This contains two working utilities built :
 
 - **Part 1:** A browser-based **Weather Data Viewer** — fetches live weather for any city and displays it on an interactive dark-themed dashboard with charts and a map.
 - **Part 2:** A desktop **Python CSV Plotter** — a Tkinter GUI app that loads any CSV file and plots user-selected columns as a line chart, bar chart, or scatter plot.
@@ -531,97 +530,6 @@ python plotter.py
 
 ---
 
-## AI Workflow & Prompts
-
-The full AI interaction history (approximately 70 pages) is included in:
-
-📄 `ai-prompts/prompts.pdf`
-
-Since the full document is extensive, below is a concise summary of the key prompts used during development:
-
-### Summary of Key Prompts Used
-
-**Initial Planning:**
-> "I need to complete this assignment within 30 hours, I choose weather viewer for part 1 and csv plotter for part 2, provide me a plan on how to complete it (all the tech stack I can use, it should be doable and visually impressive)"
-
-**File Structure Correction:**
-> "minor changes single html file is risky as it is stated in the document to have proper file system: like this index.html style.css script.js"
-
-**Code Generation (Part 1):**
-> "give code for index.html, style.css and script.js one by one" (Claude generated each file separately in sequence)
-
-**Feature Additions:**
-> "okay few things I'd like to add: 1) A wind speed chart 2) Combine humidity in the temperature chart, both of different color 3) A city map using leaflet.js and a marker highlighting it with colors according to the temperature (red, orange, yellow, light blue, dark blue; from hot to cold), it will serve as a summary with all important fields like wind speed, humidity, temp around it."
-
-**Debugging and Error Correction**
->" i have added these things but now the site does not show anything(just the interface)"
-
->"still the loading issue"
-
->"i found a similar prob on github, this fixed it for him"
-   
-
-**Code Generation (Part 2):**
-> "lets go with part 2" → Claude asked 3 clarifying questions (dropdowns for columns, extra graph types, GUI style) and then generated all 3 files.
-
-**Architecture Diagrams:**
-> "Give the program architecture for part 1, for understanding"  
-> "and a sequential pipeline diagram for part 1, to show how things work and in what order"  
-> "Now architecture diagram for part 2"  
-> "sequential pipeline diagram for part 2"  
-> "make it more readable less clustered, text should not go beyond the box and not overlap"
-
----
-
-## Manual Changes
-
-These are changes made directly to the AI-generated code after reviewing it:
-
-### Part 1 – Weather Data Viewer
-
-**1. Removed inaccurate "Feels Like" display**
-
-The AI used `cw.temperature - 2` as a shortcut for feels-like temperature. This is not scientifically accurate (feels-like depends on wind and humidity). The `feels-like` element and its corresponding JS line were removed entirely.
-
-```html
-<!-- REMOVED from index.html (line 71): -->
-<span class="stat-sub" id="feels-like">Feels like --</span>
-```
-```javascript
-// REMOVED from script.js (lines 193-194):
-document.getElementById("feels-like").textContent =
-  `Feels like ${Math.round(cw.temperature - 2)}°C`;
-```
-
-**2. Changed "UV Index" card to "Weather Condition"**
-
-The free tier of the Open-Meteo API does not include UV Index data. The card was repurposed to show the human-readable weather description derived from the WMO weather code.
-
-```html
-<!-- CHANGED in index.html: -->
-<span class="stat-label">UV Index</span>
-<!-- TO: -->
-<span class="stat-label">Weather Condition</span>
-```
-
-The JS already used `WMO_CODES[wCode]` for this card's value — only the label in the HTML was updated to match.
-
-**3. Fixed Leaflet.js map tile rendering on initial load**
-
-Leaflet tiles only rendered correctly after resizing the browser or opening DevTools. This is a known Leaflet issue when the map container is hidden/zero-size at the time of initialisation.
-
-Added `map.invalidateSize()` inside a 100ms `setTimeout` at the end of `renderMap()`, which forces Leaflet to recalculate tile positions after the DOM has fully painted:
-
-```javascript
-// Added at end of renderMap():
-setTimeout(() => {
-  if (map) {
-    map.invalidateSize();
-  }
-}, 100);
-```
-
-*Source: Leaflet GitHub Discussions #8795 — "Map not rendering correctly on load, but fine on viewport resize"*
 
 ### Part 2 – Python CSV Plotter
 
